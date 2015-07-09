@@ -1,0 +1,6 @@
+#ifndef NEVISDECODER_EVENTBUILDER_SAMPLE_CXX
+#define NEVISDECODER_EVENTBUILDER_SAMPLE_CXX
+
+#include "sample.h"
+
+#endif
