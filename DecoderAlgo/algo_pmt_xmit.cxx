@@ -88,6 +88,7 @@ namespace decoder {
 
     last_word = word;
 
+
     return status;
   }
 
@@ -227,8 +228,8 @@ namespace decoder {
 
       }
 
-      _event_data->set_module_address         ( _header_info.module_address    );
-      _event_data->set_module_id              ( _header_info.module_id         );
+      //_event_data->set_module_address         ( _header_info.module_address    );
+      //_event_data->set_module_id              ( _header_info.module_id         );
       _event_data->set_event_number           ( _header_info.event_number          );
       _event_data->set_event_frame_number     ( _header_info.event_frame_number    );
       _event_data->set_fem_trig_frame_number  ( _header_info.fem_trig_frame_number  );
@@ -236,15 +237,20 @@ namespace decoder {
       _event_data->set_nwords                 ( _header_info.nwords            );
       _event_data->set_checksum               ( _header_info.checksum          );
 
-      status = _storage->next_event();
+      _storage->set_id(0,0,_storage->get_index());
 
+      if(_header_info.module_address == 6) {
+	status = _storage->next_event();
+	clear_event();
+      }
+      
     }
     else
 
       print(::larlite::msg::kERROR,__FUNCTION__,
 		    Form("Skipping to store event %d...",_header_info.event_number));
 
-    clear_event();
+    //clear_event();
 
     return status;
   }
