@@ -9,6 +9,8 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
+#pragma link C++ class decoder::algo_base+;
+#pragma link C++ class decoder::algo_fem_decoder_base+;
 #pragma link C++ class decoder::algo_pmt_xmit+;
 
 //ADD_NEW_CLASS ... do not change this line
