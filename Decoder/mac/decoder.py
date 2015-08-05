@@ -20,10 +20,11 @@ sys.argv=[]
 
 # Import ROOT
 import ROOT
-
+ROOT.gSystem.Load("libLArLite_Analysis")
+ROOT.gSystem.Load("libNevisDecoder_Decoder")
 # Load decoder class/namespace
-from ROOT import decoder as fmwk
 from ROOT import larlite
+from ROOT import decoder as fmwk
 
 #
 # Four lines to just get the output filename from input file name.
@@ -82,8 +83,8 @@ decoder.set_output_filename(outname)
 # missing event words or conflicting encoding algorithm, and continue
 # in the decoding event loop. When turned off, the program exits as
 # soon as it encounters any issue.
-decoder.debug_mode(False)
-#decoder.debug_mode(True)
+#decoder.debug_mode(False)
+decoder.debug_mode(True)
 
 # Finish configuration. Now run it.
 decoder.run()

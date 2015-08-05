@@ -296,7 +296,8 @@ namespace decoder {
       // Channel header ... read in channel info from this word
       if(last_word_class!=kFEM_FIRST_WORD && 
 	 last_word_class!=kCHANNEL_LAST_WORD &&
-	 !( (_event_data->size() && (_event_data->back().size() & 0x1)) && _last_word==0x8000)) {
+	 !( (_event_data->size() && (_event_data->back().size() & 0x1)) && _last_word==0x8000) &&
+	 _last_word != 0x8000) {
 	print(::larlite::msg::kERROR,__FUNCTION__,
 		      Form("Found channel header (%x) in an unexpected place (previous=%x)!",word,last_word));
 	status=false;
@@ -340,10 +341,12 @@ namespace decoder {
 	    if( ((*_event_data->rbegin()).size())%2 ) return true;
 
 	    else { 
-	      print(::larlite::msg::kERROR,__FUNCTION__,
-			    Form("Found a padding 0x8000 in an unexpected place (previous readout was even (%zu)!)...",
-				 (*_event_data->rbegin()).size()));
-	      status = false;
+	      //print(::larlite::msg::kERROR,__FUNCTION__,
+	      print(::larlite::msg::kWARNING,__FUNCTION__,
+		    Form("Found a padding 0x8000 in an unexpected place (previous readout was even (%zu)!)...",
+			 (*_event_data->rbegin()).size()));
+	      //status = false;
+	      return true;
 	    }
 	  }else{
 	    // In this case, we should be missing the CHANNEL_HEADER because this pulse is from 
@@ -354,9 +357,12 @@ namespace decoder {
 	    _ch_data.set_disc_id( (*_event_data->rbegin()).disc_id() );
 	    if(_verbosity[::larlite::msg::kNORMAL])
 	      print(::larlite::msg::kNORMAL,__FUNCTION__,
-			    Form("Found consecutively readout data arrays @ event %d (missing channel very first header)!",
-				 _header_info.event_number)
-			    );
+		    Form("Found consecutively readout data arrays @ event %d ch %d (%zu samples) (missing channel very first header)!",
+			 _header_info.event_number,
+			 _ch_data.channel_number(),
+			 (*_event_data->rbegin()).size()
+			 )
+		    );
 	  }
 	}
 
@@ -460,7 +466,8 @@ namespace decoder {
     // Save
     _ch_data.set_module_id(_header_info.module_id);
     _ch_data.set_module_address(_header_info.module_address);
-    _event_data->push_back(_ch_data);
+    if(_ch_data.size())
+      _event_data->push_back(_ch_data);
 
     // Clear
     _channel_header_count=0;
